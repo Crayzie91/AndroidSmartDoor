@@ -52,6 +52,7 @@ import java.util.concurrent.locks.Lock;
  * ThingWorx specific features from its base class and focuses on the creation of your
  * virtual things. It also
  * provides a generic settings UI to configure the ThingWorx client connection.
+ * Test
  */
 public class MainActivity extends ThingworxService {
 
