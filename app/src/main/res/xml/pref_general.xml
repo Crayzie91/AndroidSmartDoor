@@ -1,0 +1,29 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <EditTextPreference
+        android:defaultValue="@string/prompt_ip_default"
+        android:inputType="text"
+        android:key="platform_ip"
+        android:maxLines="1"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="@string/prompt_ip" />
+
+    <EditTextPreference
+        android:defaultValue="@string/prompt_port_default"
+        android:inputType="number"
+        android:key="platform_port"
+        android:maxLines="1"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="@string/prompt_port" />
+
+    <EditTextPreference
+        android:defaultValue="@string/prompt_app_key_default"
+        android:inputType="text"
+        android:key="platform_app_key"
+        android:maxLines="1"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="@string/prompt_app_key" />
+</PreferenceScreen>

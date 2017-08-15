@@ -1,0 +1,1 @@
+include ':app', ':Thingworx-Android-SDK', ':Thingworx-JARS-Common', ':Thingworx-JARS-Communication'
