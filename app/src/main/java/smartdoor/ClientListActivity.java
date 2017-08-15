@@ -37,13 +37,13 @@ public class ClientListActivity extends ThingworxService {
 
     private static final Logger LOG = LoggerFactory.getLogger(ClientListActivity.class);
 
-    InfoTable info=null;
-    ValueCollection valC=null;
+    private InfoTable info=null;
+    private ValueCollection valC=null;
 
-    Map<Number, Number> ClientList = new HashMap<Number, Number>();
-    ArrayList<String> listItems=new ArrayList<String>();
-    ArrayAdapter<String> adapter;
-    ListView list;
+    private Map<Number, Number> ClientList = new HashMap<Number, Number>();
+    private ArrayList<String> listItems=new ArrayList<String>();
+    private ArrayAdapter<String> adapter;
+    private ListView list;
     private boolean wide;
 
     @Override
