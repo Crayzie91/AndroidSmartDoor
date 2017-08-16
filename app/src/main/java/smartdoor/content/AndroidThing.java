@@ -262,7 +262,7 @@ public class AndroidThing extends VirtualThing {
 
         protected void HTTPRequest(String name, String status){
             try {
-                URL url = new URL("http://34.227.165.169/Thingworx/Things/" + name + "/Properties/DoorStatus");
+                URL url = new URL("http://34.227.165.169/Thingworx/Things/" + name + "/Services/remoteDoor");
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("PUT");
                 connection.setRequestProperty("appKey", "ce22e9e4-2834-419c-9656-ef9f844c784c");
@@ -275,7 +275,7 @@ public class AndroidThing extends VirtualThing {
 
                 //Send request
                 DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
-                String body = "{\"DoorStatus\":\""+status+"\"}";
+                String body = "{\"Status\":\""+status+"\"}";
                 wr.writeBytes(body);
                 wr.close();
 

@@ -3,6 +3,7 @@ package smartdoor;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -139,9 +140,6 @@ public class ClientListActivity extends ThingworxService {
         super.onStop();
     }
 
-    /**
-     * Resume will be called each time this activity becomes active.
-     */
     @Override
     protected void onResume() {
         super.onResume();
@@ -151,12 +149,9 @@ public class ClientListActivity extends ThingworxService {
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
 
-        if(this.getResources().getConfiguration().orientation==ORIENTATION_PORTRAIT) {
-            setContentView(R.layout.activity_client_list);
-            wide=false;
-        }
-        else {
-            setContentView(R.layout.activity_client_list_wide);
+        setContentView(R.layout.activity_client_list);
+
+        if (findViewById(R.id.client_detail) != null) {
             wide = true;
         }
 
@@ -262,8 +257,10 @@ public class ClientListActivity extends ThingworxService {
         }
     }*/
 
-    /**
-     * Function tries to populate the ListView.
+     /**
+     * This Function tries to populate the ListView.
+     *
+     * @throws Exception
      */
     private void populateListView() throws Exception {
         info = client.invokeService(RelationshipTypes.ThingworxEntityTypes.Things, "ServerThing", "getConnectedClients", new ValueCollection(), 10000);
@@ -294,6 +291,25 @@ public class ClientListActivity extends ThingworxService {
         detail.append("Location: " + val.get("Location")+"\n");
 
         ((TextView) findViewById(R.id.client_detail)).setText(detail);
+/*
+        Bundle arguments = new Bundle();
+        arguments.putString("Name: ",val.getStringValue("name"));
+        arguments.putString("Description: ",val.getStringValue("description"));
+        arguments.putString("Distance: ",val.getStringValue("Distance"));
+        arguments.putString("LastEntered: ",val.getStringValue("LastEntered"));
+        arguments.putString("DoorStatus: ",val.getStringValue("DoorStatus"));
+        arguments.putString("ID: ",val.getStringValue("ID"));
+        arguments.putString("Location: ",val.getStringValue("Location"));
+
+
+        ClientDetailFragment fragment = new ClientDetailFragment();
+        fragment.setArguments(arguments);
+        this.getSupportFragmentManager().beginTransaction()
+                .replace(R.id.client_detail, fragment)
+                .addToBackStack(null)
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                .commitAllowingStateLoss();*/
+
     }
 
     /**
