@@ -172,18 +172,6 @@ public class MainActivity extends ThingworxService {
                 }
             }
         });
-        Button testButton = (Button) findViewById(R.id.test_button);
-        testButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                try {
-                    thing.setClientProperty("count", 99);
-                    thing.processScanRequest();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
 
         Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
