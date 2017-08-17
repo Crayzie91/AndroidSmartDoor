@@ -3,7 +3,6 @@ package smartdoor;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -15,7 +14,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.thingworx.communications.client.things.VirtualThing;
 import com.thingworx.relationships.RelationshipTypes;
 import com.thingworx.types.InfoTable;
 import com.thingworx.types.collections.ValueCollection;
@@ -27,22 +25,18 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import smartdoor.content.AndroidThing;
 import smartdoor.preferences.SettingsActivity;
 import smartdoor.utilities.ThingworxService;
-
-import static android.content.res.Configuration.ORIENTATION_LANDSCAPE;
-import static android.content.res.Configuration.ORIENTATION_PORTRAIT;
 
 public class ClientListActivity extends ThingworxService {
 
     private static final Logger LOG = LoggerFactory.getLogger(ClientListActivity.class);
 
-    private InfoTable info=null;
-    private ValueCollection valC=null;
+    private InfoTable info = null;
+    private ValueCollection valC = null;
 
     private Map<Number, Number> ClientList = new HashMap<Number, Number>();
-    private ArrayList<String> listItems=new ArrayList<String>();
+    private ArrayList<String> listItems = new ArrayList<String>();
     private ArrayAdapter<String> adapter;
     private ListView list;
     private boolean wide;
@@ -53,33 +47,28 @@ public class ClientListActivity extends ThingworxService {
         setContentView(R.layout.activity_client_list);
 
         if (findViewById(R.id.client_detail) != null) {
-           wide = true;
+            wide = true;
         }
 
-        list = (ListView)findViewById(R.id.client_list);
+        list = (ListView) findViewById(R.id.client_list);
 
-        adapter=new ArrayAdapter<String>(this,
+        adapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_list_item_1,
                 listItems);
         list.setAdapter(adapter);
 
-        // Check if a previously destroyed instance is recreated
-        if (savedInstanceState != null) {// Restore value of members from saved state
-            savedInstanceState=null;
-        } else {// Initialize a new instance
-            try {
-                populateListView();
-            } catch (Exception e) {
-                e.printStackTrace();
-                LOG.error("ListView couldn't be populated.");
-                Intent i = new Intent(getApplicationContext(), MainActivity.class);
-                startActivity(i);
+        try {
+            populateListView();
+        } catch (Exception e) {
+            e.printStackTrace();
+            LOG.error("ListView couldn't be populated.");
+            Intent i = new Intent(getApplicationContext(), MainActivity.class);
+            startActivity(i);
 
-                if (client.getThings().isEmpty())
-                    Toast.makeText(getApplicationContext(), "App not connected to platform.", Toast.LENGTH_LONG).show();
-                else
-                    Toast.makeText(getApplicationContext(), "Client list couldn't be populated. Propably no clients connected.", Toast.LENGTH_LONG).show();
-            }
+            if (client.getThings().isEmpty())
+                Toast.makeText(getApplicationContext(), "App not connected to platform.", Toast.LENGTH_LONG).show();
+            else
+                Toast.makeText(getApplicationContext(), "Client list couldn't be populated. Propably no clients connected.", Toast.LENGTH_LONG).show();
         }
 
         adapter.notifyDataSetChanged();
@@ -90,7 +79,7 @@ public class ClientListActivity extends ThingworxService {
 
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id){
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 try {
                     valC = client.invokeService(RelationshipTypes.ThingworxEntityTypes.Things, "ClientThing_" + ClientList.get((int) id), "GetPropertyValues", new ValueCollection(), 10000).getLastRow();
                 } catch (Exception e) {
@@ -99,8 +88,8 @@ public class ClientListActivity extends ThingworxService {
 
                 if (wide) {
                     populateDetailList(valC);
-                }else {
-                    callListDetailActivity(valC);
+                } else {
+                    callListDetailActivity(valC.getStringValue("name"));
                 }
             }
         });
@@ -116,7 +105,7 @@ public class ClientListActivity extends ThingworxService {
                     return false;
                 }
 
-                callListDetailActivity(valC);
+                callListDetailActivity(valC.getStringValue("name"));
                 return true;
             }
         });
@@ -124,7 +113,7 @@ public class ClientListActivity extends ThingworxService {
         if (!hasConnectionPreferences()) {
             connectionState = ConnectionState.DISCONNECTED;
             Intent i = new Intent(this, SettingsActivity.class);
-            startActivityForResult(i, 1);
+            startActivity(i);
             return;
         }
     }
@@ -155,16 +144,16 @@ public class ClientListActivity extends ThingworxService {
             wide = true;
         }
 
-        list = (ListView)findViewById(R.id.client_list);
+        list = (ListView) findViewById(R.id.client_list);
 
-        adapter=new ArrayAdapter<String>(this,
+        adapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_list_item_1,
                 listItems);
         list.setAdapter(adapter);
 
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id){
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 try {
                     valC = client.invokeService(RelationshipTypes.ThingworxEntityTypes.Things, "ClientThing_" + ClientList.get((int) id), "GetPropertyValues", new ValueCollection(), 10000).getLastRow();
                 } catch (Exception e) {
@@ -173,8 +162,8 @@ public class ClientListActivity extends ThingworxService {
 
                 if (wide) {
                     populateDetailList(valC);
-                }else {
-                    callListDetailActivity(valC);
+                } else {
+                    callListDetailActivity(valC.getStringValue("name"));
                 }
             }
         });
@@ -189,7 +178,7 @@ public class ClientListActivity extends ThingworxService {
                     return false;
                 }
 
-                callListDetailActivity(valC);
+                callListDetailActivity(valC.getStringValue("name"));
                 return true;
             }
         });
@@ -213,51 +202,27 @@ public class ClientListActivity extends ThingworxService {
     public boolean onOptionsItemSelected(MenuItem item) {
         Intent i;
         switch (item.getItemId()) {
-           // action with ID action_settings was selected
-           case R.id.action_main:
-               i = new Intent(this, ClientListActivity.class);
-               startActivityForResult(i, 1);
-               break;
-           case R.id.action_settings:
-                if(connectionState == ConnectionState.CONNECTED)
+            // action with ID action_settings was selected
+            case R.id.action_main:
+                i = new Intent(this, MainActivity.class);
+                startActivity(i);
+                break;
+            case R.id.action_settings:
+                if (connectionState == ConnectionState.CONNECTED)
                     disconnect();
                 i = new Intent(this, SettingsActivity.class);
-                startActivityForResult(i, 1);
+                startActivity(i);
                 break;
             case android.R.id.home:
                 navigateUpTo(new Intent(this, ClientListActivity.class));
                 break;
-           default:
+            default:
                 break;
         }
         return true;
     }
 
-    // Save current list if rotated.
-  /*  @Override
-    public void onSaveInstanceState(Bundle savedInstanceState) {
-        super.onSaveInstanceState(savedInstanceState);
-        int count=1;
-        for (String val : listItems) {
-            savedInstanceState.putString(Integer.toString(count), val);
-            count++;
-        }
-    }*/
-
-    // rebuild current itemList if activitiy is restarted
-  /*  @Override
-    public void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        int var=0;
-        String get=null;
-        while((get = savedInstanceState.getString(Integer.toString(var+1)))!=null){
-            ClientList.put(listItems.size(),var+1);
-            listItems.add(var,get);
-            var++;
-        }
-    }*/
-
-     /**
+    /**
      * This Function tries to populate the ListView.
      *
      * @throws Exception
@@ -266,12 +231,15 @@ public class ClientListActivity extends ThingworxService {
         info = client.invokeService(RelationshipTypes.ThingworxEntityTypes.Things, "ServerThing", "getConnectedClients", new ValueCollection(), 10000);
         listItems.clear();
         for (ValueCollection val : info.getRows()) {
-            int id = (int)val.getValue("ID");
-            String name = (String)val.getValue("name");
-            String loc = (String)val.getValue("Location");
-            ClientList.put(listItems.size(),id);
-            listItems.add(listItems.size(),"ID:"+id+"\t\t\t"+name+"\t\t\t"+loc);
+            int id = (int) val.getValue("ID");
+            String name = (String) val.getValue("name");
+            String loc = (String) val.getValue("Location");
+            ClientList.put(listItems.size(), id);
+            listItems.add(listItems.size(), "ID:" + id + "\t\t\t" + name + "\t\t\t" + loc);
         }
+
+        if(info.getRowCount()==0)
+            throw new IllegalArgumentException( "RowCount = 0!" );
     }
 
     /**
@@ -282,13 +250,13 @@ public class ClientListActivity extends ThingworxService {
     private void populateDetailList(ValueCollection val) {
         StringBuilder detail = null;
 
-        detail = new StringBuilder("Name: " + val.get("name") +"\n");
-        detail.append("Description: " + val.get("description") +"\n");
-        detail.append("Distance: " + val.get("Distance").getValue() +" cm\n");
-        detail.append("LastEntered: " + val.get("LastEntered")+"\n");
+        detail = new StringBuilder("Name: " + val.get("name") + "\n");
+        detail.append("Description: " + val.get("description") + "\n");
+        detail.append("Distance: " + val.get("Distance").getValue() + " cm\n");
+        detail.append("LastEntered: " + val.get("LastEntered") + "\n");
         detail.append("DoorStatus: " + val.get("DoorStatus") + "\n");
-        detail.append("ID: " + val.get("ID").getValue()+"\n");
-        detail.append("Location: " + val.get("Location")+"\n");
+        detail.append("ID: " + val.get("ID").getValue() + "\n");
+        detail.append("Location: " + val.get("Location") + "\n");
 
         ((TextView) findViewById(R.id.client_detail)).setText(detail);
     }
@@ -298,15 +266,9 @@ public class ClientListActivity extends ThingworxService {
      *
      * @param val Collection of info
      */
-    private void callListDetailActivity(ValueCollection val) {
+    private void callListDetailActivity(String name) {
         Intent i = new Intent(getApplicationContext(), ClientDetailActivity.class);
-        i.putExtra("ClientName", val.getStringValue("name"));
-        i.putExtra("ClientDescription", val.getStringValue("description"));
-        i.putExtra("ClientDistance", (double) val.get("Distance").getValue());
-        i.putExtra("ClientLastEntered", val.getStringValue("LastEntered"));
-        i.putExtra("ClientDoorStatus", val.getStringValue("DoorStatus"));
-        i.putExtra("ClientID", (int) val.get("ID").getValue());
-        i.putExtra("ClientLocation", val.getStringValue("Location"));
+        i.putExtra("ClientName", name);
 
         startActivity(i);
     }

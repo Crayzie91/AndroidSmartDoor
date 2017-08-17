@@ -23,6 +23,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.thingworx.communications.client.things.VirtualThing;
 
@@ -59,9 +60,11 @@ public class MainActivity extends ThingworxService {
     private boolean firstConnected = false, created = false;
 
     // UI references
-    private EditText mIPView;
-    private EditText mPortView;
-    private EditText mAppKeyView;
+    private EditText IPView;
+    private EditText PortView;
+    private EditText AppKeyView;
+    private EditText rule;
+    private EditText cond;
     private CheckBox checkBoxConnected;
     private MainActivityReceiver mainReceiver;
 
@@ -71,14 +74,10 @@ public class MainActivity extends ThingworxService {
 
         // Build User Interface
         setContentView(R.layout.activity_main);
-        mIPView = (EditText) findViewById(R.id.ip);
+        IPView = (EditText) findViewById(R.id.ip);
         checkBoxConnected = (CheckBox) findViewById(R.id.checkBoxConnected);
-        mPortView = (EditText) findViewById(R.id.port);
-        mAppKeyView = (EditText) findViewById(R.id.appKey);
-
-        mIPView.setText("34.227.165.169");
-        mPortView.setText("80");
-        mAppKeyView.setText("ce22e9e4-2834-419c-9656-ef9f844c784c");
+        PortView = (EditText) findViewById(R.id.port);
+        AppKeyView = (EditText) findViewById(R.id.appKey);
 
         Button connectButton = (Button) findViewById(R.id.connect_button);
         connectButton.setOnClickListener(new View.OnClickListener() {
@@ -88,9 +87,9 @@ public class MainActivity extends ThingworxService {
                     if(connectionState == ConnectionState.CONNECTED)
                         disconnect();
 
-                    String newIp = mIPView.getText().toString();
-                    String newPort = mPortView.getText().toString();
-                    String newAppKey = mAppKeyView.getText().toString();
+                    String newIp = IPView.getText().toString();
+                    String newPort = PortView.getText().toString();
+                    String newAppKey = AppKeyView.getText().toString();
 
                     if(TextUtils.isEmpty(newIp) && TextUtils.isEmpty(newPort) && TextUtils.isEmpty(newAppKey)){
                         settingState = SettingLocation.PREFERENCES;
@@ -113,7 +112,7 @@ public class MainActivity extends ThingworxService {
                         // Show Preferences Activity
                         connectionState = ConnectionState.DISCONNECTED;
                         Intent i = new Intent(getApplicationContext(),SettingsActivity.class);
-                        startActivityForResult(i, SETTING_CODE);
+                        startActivity(i);
                         return;
                     }
 
@@ -165,7 +164,22 @@ public class MainActivity extends ThingworxService {
                     if(connectionState == ConnectionState.CONNECTED)
                         disconnect();
                     Intent i = new Intent(getApplicationContext(), SettingsActivity.class);
-                    startActivityForResult(i, SETTING_CODE);
+                    startActivity(i);
+                    return;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        Button addRuleButton = (Button) findViewById(R.id.addrule_button);
+        addRuleButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    ValueCollection payload = new ValueCollection();
+                    payload.put("name",new StringPrimitive(rule.getText().toString()));
+                    payload.put("condition",new StringPrimitive(cond.getText().toString()));
+                    client.invokeService(RelationshipTypes.ThingworxEntityTypes.Things, "ServerThing", "addRule", payload, 10000);
                     return;
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -189,7 +203,7 @@ public class MainActivity extends ThingworxService {
                 e.printStackTrace();
             }
         } else {
-            checkBoxConnected.setChecked(created);
+            checkBoxConnected.setChecked(thing==null?false:true);
         }
     }
 
@@ -231,7 +245,7 @@ public class MainActivity extends ThingworxService {
                 if(connectionState == ConnectionState.CONNECTED)
                     disconnect();
                 i = new Intent(this, SettingsActivity.class);
-                startActivityForResult(i, SETTING_CODE);
+                startActivity(i);
                 break;
             default:
                 break;

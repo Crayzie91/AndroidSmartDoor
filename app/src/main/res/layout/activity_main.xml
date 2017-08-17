@@ -15,10 +15,6 @@
 
     <TableRow
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
-    <TableRow
-        android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <CheckBox
@@ -30,10 +26,6 @@
             android:clickable="false"/>
     </TableRow>
 
-    <TableRow
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    </TableRow>
     <TableRow
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -50,10 +42,6 @@
     <TableRow
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-    </TableRow>
-    <TableRow
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
 
         <EditText
             android:layout_width="match_parent"
@@ -64,10 +52,6 @@
             android:id="@+id/port" />
     </TableRow>
 
-    <TableRow
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    </TableRow>
     <TableRow
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -84,15 +68,6 @@
     <TableRow
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-    </TableRow>
-
-    <TableRow
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    </TableRow>
-    <TableRow
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
 
         <Button
             android:id="@+id/connect_button"
@@ -103,10 +78,6 @@
             android:textStyle="bold" />
     </TableRow>
 
-    <TableRow
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    </TableRow>
     <TableRow
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -123,10 +94,6 @@
     <TableRow
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-    </TableRow>
-    <TableRow
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
 
         <Button
             android:id="@+id/disconnect_button"
@@ -135,9 +102,47 @@
             android:layout_height="wrap_content"
             android:text="@string/action_disconnect"
             android:textStyle="bold" />
+
     </TableRow>
+
     <TableRow
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent" >
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:text="Rule"
+            android:ems="10"
+            android:id="@+id/rule"
+            android:hint="@string/prompt_rule" />
+
     </TableRow>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:text="Condition"
+            android:ems="10"
+            android:id="@+id/condition"
+            android:hint="@string/prompt_condition" />
+    </TableRow>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <Button
+            android:text="Add Rule"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/addrule_button" />
+    </TableRow>
+
 </TableLayout>

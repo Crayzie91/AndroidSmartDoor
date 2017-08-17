@@ -14,17 +14,20 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 
-import smartdoor.preferences.SettingsActivity;
-import smartdoor.utilities.Constants;
+import com.thingworx.relationships.RelationshipTypes;
+import com.thingworx.types.InfoTable;
+import com.thingworx.types.collections.ValueCollection;
+import com.thingworx.types.primitives.StringPrimitive;
+
 import smartdoor.utilities.ThingworxService;
 
 
-public class ClientDetailActivity extends AppCompatActivity {
-    protected static final String TAG = ClientDetailActivity.class.getName();
-    Bundle info;
+public class ClientDetailActivity extends ThingworxService {
+    ValueCollection info = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,19 +39,53 @@ public class ClientDetailActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         Intent intent = getIntent();
-        info = intent.getExtras();
+        String name = intent.getStringExtra("ClientName");
+
+        try {
+            info = client.invokeService(RelationshipTypes.ThingworxEntityTypes.Things, name, "GetPropertyValues", new ValueCollection(), 10000).getLastRow();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         StringBuilder detail = null;
-
-        detail = new StringBuilder("Name: " + info.get("ClientName") +"\n\n");
-        detail.append("Description: " + info.get("ClientDescription") +"\n\n");
-        detail.append("Distance: " + info.get("ClientDistance") +" cm\n\n");
-        detail.append("LastEntered: " + info.get("ClientLastEntered")+"\n\n");
-        detail.append("DoorStatus: " + info.get("ClientDoorStatus") + "\n\n");
-        detail.append("ID: " + info.get("ClientID")+"\n\n");
-        detail.append("Location: " + info.get("ClientLocation")+"\n");
+        detail = new StringBuilder("Name: " + info.get("name") + "\n");
+        detail.append("Description: " + info.get("description") + "\n");
+        detail.append("Distance: " + info.get("Distance").getValue() + " cm\n");
+        detail.append("LastEntered: " + info.get("LastEntered") + "\n");
+        detail.append("DoorStatus: " + info.get("DoorStatus") + "\n");
+        detail.append("ID: " + info.get("ID").getValue() + "\n");
+        detail.append("Location: " + info.get("Location") + "\n");
 
         ((TextView) findViewById(R.id.client_detail)).setText(detail);
+
+        Button openButton = (Button) findViewById(R.id.opendoor_button);
+        openButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    ValueCollection payload = new ValueCollection();
+                    payload.put("Status",new StringPrimitive("Open"));
+                    client.invokeService(RelationshipTypes.ThingworxEntityTypes.Things, info.get("ClientName").toString(), "remoteDoor", payload, 10000);
+                    return;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        Button historyButton = (Button) findViewById(R.id.history_button);
+        historyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    Intent i = new Intent(getApplicationContext(), HistoryListActivity.class);
+                    i.putExtra("name",info.get("name").toString());
+                    startActivity(i);
+                    return;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     @Override
@@ -75,11 +112,11 @@ public class ClientDetailActivity extends AppCompatActivity {
             // action with ID action_settings was selected
             case R.id.action_main:
                 i = new Intent(this, MainActivity.class);
-                startActivityForResult(i, 1);
+                startActivity(i);
                 break;
             case R.id.action_clientlist:
                 i = new Intent(this, ClientListActivity.class);
-                startActivityForResult(i, 1);
+                startActivity(i);
                 break;
             case android.R.id.home:
                 navigateUpTo(new Intent(this, ClientListActivity.class));

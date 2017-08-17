@@ -1,40 +1,38 @@
 package smartdoor.content;
 
 import android.app.IntentService;
-        import android.app.Notification;
-        import android.app.NotificationManager;
-        import android.app.PendingIntent;
-        import android.content.Context;
-        import android.content.Intent;
-        import android.graphics.Bitmap;
-        import android.graphics.BitmapFactory;
-        import android.os.AsyncTask;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 
-        import org.slf4j.Logger;
-        import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-        import com.thingworx.communications.client.ConnectedThingClient;
-        import com.thingworx.communications.client.things.VirtualThing;
-        import com.thingworx.metadata.PropertyDefinition;
-        import com.thingworx.metadata.annotations.ThingworxPropertyDefinition;
-        import com.thingworx.metadata.annotations.ThingworxPropertyDefinitions;
-        import com.thingworx.metadata.annotations.ThingworxServiceDefinition;
-        import com.thingworx.metadata.annotations.ThingworxServiceParameter;
-        import com.thingworx.metadata.annotations.ThingworxServiceResult;
-        import com.thingworx.types.constants.CommonPropertyNames;
-        import com.thingworx.types.primitives.IPrimitiveType;
+import com.thingworx.communications.client.ConnectedThingClient;
+import com.thingworx.communications.client.things.VirtualThing;
+import com.thingworx.metadata.PropertyDefinition;
+import com.thingworx.metadata.annotations.ThingworxServiceDefinition;
+import com.thingworx.metadata.annotations.ThingworxServiceParameter;
+import com.thingworx.metadata.annotations.ThingworxServiceResult;
+import com.thingworx.types.constants.CommonPropertyNames;
+import com.thingworx.types.primitives.IPrimitiveType;
 
-        import java.io.BufferedReader;
-        import java.io.DataOutputStream;
-        import java.io.InputStream;
-        import java.io.InputStreamReader;
-        import java.net.HttpURLConnection;
-        import java.net.URL;
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
-        import smartdoor.R;
+import smartdoor.R;
 
-        import static android.content.Context.NOTIFICATION_SERVICE;
-        import static smartdoor.MainActivity.NOTIFICATION_CODE;
+import static android.content.Context.NOTIFICATION_SERVICE;
+import static smartdoor.MainActivity.NOTIFICATION_CODE;
 
 public class AndroidThing extends VirtualThing {
 

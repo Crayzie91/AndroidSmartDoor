@@ -27,6 +27,7 @@
         <activity android:name=".preferences.SettingsActivity"
             android:label="@string/title_activity_preference"
             android:parentActivityName=".MainActivity" />
+        <activity android:name=".HistoryListActivity" />
 
         <service android:name=".utilities.ThingworxConnectService" />
         <service android:name=".utilities.ThingworxProcessService" />
