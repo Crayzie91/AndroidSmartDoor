@@ -47,12 +47,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
 
-/**
- * This class creates an Activity that manages one or more VirtualThings. It gets all of its
- * ThingWorx specific features from its base class and focuses on the creation of your
- * virtual things. It also
- * provides a generic settings UI to configure the ThingWorx client connection.
- */
 public class MainActivity extends ThingworxService {
 
     private static final Logger LOG = LoggerFactory.getLogger(MainActivity.class);
