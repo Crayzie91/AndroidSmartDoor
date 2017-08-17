@@ -36,7 +36,6 @@
         android:layout_height="match_parent"
         android:padding="16dp"
         android:textIsSelectable="true"
-        tools:context="smartdoor.ClientDetailFragment"
+        tools:context="smartdoor.ClientDetailActivity"
         tools:text="Test" />
-
 </LinearLayout>

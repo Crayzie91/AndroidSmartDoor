@@ -1,7 +1,6 @@
 package smartdoor.content;
 
-
-        import android.app.IntentService;
+import android.app.IntentService;
         import android.app.Notification;
         import android.app.NotificationManager;
         import android.app.PendingIntent;
@@ -22,13 +21,8 @@ package smartdoor.content;
         import com.thingworx.metadata.annotations.ThingworxServiceDefinition;
         import com.thingworx.metadata.annotations.ThingworxServiceParameter;
         import com.thingworx.metadata.annotations.ThingworxServiceResult;
-        import com.thingworx.relationships.RelationshipTypes;
-        import com.thingworx.types.InfoTable;
-        import com.thingworx.types.collections.ValueCollection;
         import com.thingworx.types.constants.CommonPropertyNames;
         import com.thingworx.types.primitives.IPrimitiveType;
-        import com.thingworx.types.primitives.ImagePrimitive;
-        import com.thingworx.types.primitives.StringPrimitive;
 
         import java.io.BufferedReader;
         import java.io.DataOutputStream;
@@ -37,27 +31,10 @@ package smartdoor.content;
         import java.net.HttpURLConnection;
         import java.net.URL;
 
-        import ch.qos.logback.core.net.server.Client;
-        import smartdoor.ClientListActivity;
         import smartdoor.R;
 
         import static android.content.Context.NOTIFICATION_SERVICE;
         import static smartdoor.MainActivity.NOTIFICATION_CODE;
-        import static smartdoor.utilities.ThingworxService.getClient;
-
-@SuppressWarnings("serial")
-@ThingworxPropertyDefinitions(properties = {
-        @ThingworxPropertyDefinition(name="count",
-                description="Test",
-                baseType="INTEGER",
-                aspects={"dataChangeType:ALWAYS",
-                        "dataChangeThreshold:0",
-                        "cacheTime:0",
-                        "isPersistent:FALSE",
-                        "isReadOnly:FALSE",
-                        "pushType:ALWAYS",
-                        "defaultValue:0"}),
-})
 
 public class AndroidThing extends VirtualThing {
 
@@ -65,7 +42,6 @@ public class AndroidThing extends VirtualThing {
     public static final String ACTION_2 = "action_2";
 
     private static final Logger LOG = LoggerFactory.getLogger(AndroidThing.class);
-    private static ConnectedThingClient ClientHandle;
     private Context Context;
 
     /**
@@ -80,18 +56,9 @@ public class AndroidThing extends VirtualThing {
     public AndroidThing(String name, String description, ConnectedThingClient client, Context ctx) throws Exception {
         // Call the super class's constrcutor
         super(name, description, client);
-        ClientHandle = client;
         Context = ctx;
         // Call the initializeFromAnnotations method to initialize all of the properties, services, and definitions created from annotations.
         this.initializeFromAnnotations();
-    }
-
-    public void setClientHandle(ConnectedThingClient handle){
-        ClientHandle=handle;
-    }
-
-    public ConnectedThingClient getClientHandle(){
-        return ClientHandle;
     }
 
     /**
@@ -173,19 +140,9 @@ public class AndroidThing extends VirtualThing {
     public boolean UnknownEntry(
             @ThingworxServiceParameter(name="img", baseType="IMAGE", description="Image from the repository") byte[] img,
             @ThingworxServiceParameter(name="caller", baseType="STRING", description="Name of caller") String caller) throws Exception {
-        pushNotification(caller, img);
+        new NotificationClass().execute(caller, img);
         return true;
     }
-
-    /**
-     * This function handles the notfication calls from outside classes
-     *
-     * @param img Image to show in the notificaton
-     */
-    public void pushNotification(String caller, byte[] img){
-        new NotificationClass().execute(caller, img);
-    }
-
     /**
      * This class impelements an AsyncTask which is used to retrieve a picture from the platform
      * and show it in a big picture notification.

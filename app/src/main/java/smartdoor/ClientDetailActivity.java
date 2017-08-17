@@ -7,18 +7,22 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
 
+import smartdoor.preferences.SettingsActivity;
 import smartdoor.utilities.Constants;
 import smartdoor.utilities.ThingworxService;
 
 
-public class ClientDetailActivity extends ThingworxService {
+public class ClientDetailActivity extends AppCompatActivity {
     protected static final String TAG = ClientDetailActivity.class.getName();
     Bundle info;
 
@@ -48,17 +52,6 @@ public class ClientDetailActivity extends ThingworxService {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == android.R.id.home) {
-            navigateUpTo(new Intent(this, ClientListActivity.class));
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
     protected void onStart() {
         super.onStart();
     }
@@ -66,5 +59,34 @@ public class ClientDetailActivity extends ThingworxService {
     @Override
     protected void onStop() {
         super.onStop();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.detailmenu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Intent i;
+        switch (item.getItemId()) {
+            // action with ID action_settings was selected
+            case R.id.action_main:
+                i = new Intent(this, MainActivity.class);
+                startActivityForResult(i, 1);
+                break;
+            case R.id.action_clientlist:
+                i = new Intent(this, ClientListActivity.class);
+                startActivityForResult(i, 1);
+                break;
+            case android.R.id.home:
+                navigateUpTo(new Intent(this, ClientListActivity.class));
+                break;
+            default:
+                break;
+        }
+        return true;
     }
 }

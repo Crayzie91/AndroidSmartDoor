@@ -291,25 +291,6 @@ public class ClientListActivity extends ThingworxService {
         detail.append("Location: " + val.get("Location")+"\n");
 
         ((TextView) findViewById(R.id.client_detail)).setText(detail);
-/*
-        Bundle arguments = new Bundle();
-        arguments.putString("Name: ",val.getStringValue("name"));
-        arguments.putString("Description: ",val.getStringValue("description"));
-        arguments.putString("Distance: ",val.getStringValue("Distance"));
-        arguments.putString("LastEntered: ",val.getStringValue("LastEntered"));
-        arguments.putString("DoorStatus: ",val.getStringValue("DoorStatus"));
-        arguments.putString("ID: ",val.getStringValue("ID"));
-        arguments.putString("Location: ",val.getStringValue("Location"));
-
-
-        ClientDetailFragment fragment = new ClientDetailFragment();
-        fragment.setArguments(arguments);
-        this.getSupportFragmentManager().beginTransaction()
-                .replace(R.id.client_detail, fragment)
-                .addToBackStack(null)
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                .commitAllowingStateLoss();*/
-
     }
 
     /**

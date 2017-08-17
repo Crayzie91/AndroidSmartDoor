@@ -22,7 +22,6 @@
         </activity>
         <activity android:name=".ClientListActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"></activity>
-        <activity android:name=".ClientDetailFragment" />
         <activity android:name=".ClientDetailActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"/>
         <activity android:name=".preferences.SettingsActivity"
