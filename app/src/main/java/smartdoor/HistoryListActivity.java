@@ -48,10 +48,16 @@ public class HistoryListActivity extends ThingworxService {
         list.setAdapter(adapter);
 
         try {
-            populateHistoryView();
+            info = client.invokeService(RelationshipTypes.ThingworxEntityTypes.Things, "SmartDoorClientStream", "GetStreamEntriesWithData", new ValueCollection(), 10000);
         } catch (Exception e) {
             e.printStackTrace();
             LOG.error("ListView couldn't be populated.");
+        }
+
+        try {
+            populateHistoryView(info);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         adapter.notifyDataSetChanged();
@@ -93,9 +99,9 @@ public class HistoryListActivity extends ThingworxService {
      * This Function tries to populate the HistoryView.
      *
      * @throws Exception
+     * @param info
      */
-    private void populateHistoryView() throws Exception {
-        info = client.invokeService(RelationshipTypes.ThingworxEntityTypes.Things, "SmartDoorClientStream", "GetStreamEntriesWithData", new ValueCollection(), 10000);
+    private void populateHistoryView(InfoTable info) throws Exception {
         listItems.clear();
         for (ValueCollection val : info.getRows()) {
             if(val.getStringValue("source").equals(name)) {

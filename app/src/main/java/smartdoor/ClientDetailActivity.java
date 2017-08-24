@@ -18,11 +18,13 @@ import android.widget.Button;
 import android.widget.TextView;
 
 
+import com.thingworx.communications.client.things.VirtualThing;
 import com.thingworx.relationships.RelationshipTypes;
 import com.thingworx.types.InfoTable;
 import com.thingworx.types.collections.ValueCollection;
 import com.thingworx.types.primitives.StringPrimitive;
 
+import smartdoor.content.AndroidThing;
 import smartdoor.utilities.ThingworxService;
 
 
@@ -39,24 +41,29 @@ public class ClientDetailActivity extends ThingworxService {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         Intent intent = getIntent();
-        String name = intent.getStringExtra("ClientName");
+        final String name = intent.getStringExtra("ClientName");
 
         try {
-            info = client.invokeService(RelationshipTypes.ThingworxEntityTypes.Things, name, "GetPropertyValues", new ValueCollection(), 10000).getLastRow();
+            if (!client.isConnected()){
+                disconnect();
+                connect(new VirtualThing[]{client.getThing("AndroidThing")});}
+            info = getClient().invokeService(RelationshipTypes.ThingworxEntityTypes.Things, name, "GetPropertyValues", new ValueCollection(), 10000).getLastRow();
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        StringBuilder detail = null;
-        detail = new StringBuilder("Name: " + info.get("name") + "\n");
-        detail.append("Description: " + info.get("description") + "\n");
-        detail.append("Distance: " + info.get("Distance").getValue() + " cm\n");
-        detail.append("LastEntered: " + info.get("LastEntered") + "\n");
-        detail.append("DoorStatus: " + info.get("DoorStatus") + "\n");
-        detail.append("ID: " + info.get("ID").getValue() + "\n");
-        detail.append("Location: " + info.get("Location") + "\n");
+        if(info!=null) {
+            StringBuilder detail = null;
+            detail = new StringBuilder("Name: " + info.get("name") + "\n");
+            detail.append("Description: " + info.get("description") + "\n");
+            detail.append("Distance: " + info.get("Distance").getValue() + " cm\n");
+            detail.append("LastEntered: " + info.get("LastEntered") + "\n");
+            detail.append("DoorStatus: " + info.get("DoorStatus") + "\n");
+            detail.append("ID: " + info.get("ID").getValue() + "\n");
+            detail.append("Location: " + info.get("Location") + "\n");
 
-        ((TextView) findViewById(R.id.client_detail)).setText(detail);
+            ((TextView) findViewById(R.id.client_detail)).setText(detail);
+        }
 
         Button openButton = (Button) findViewById(R.id.opendoor_button);
         openButton.setOnClickListener(new View.OnClickListener() {
@@ -64,8 +71,8 @@ public class ClientDetailActivity extends ThingworxService {
             public void onClick(View view) {
                 try {
                     ValueCollection payload = new ValueCollection();
-                    payload.put("Status",new StringPrimitive("Open"));
-                    client.invokeService(RelationshipTypes.ThingworxEntityTypes.Things, info.get("ClientName").toString(), "remoteDoor", payload, 10000);
+                    payload.put("Status", new StringPrimitive("Open"));
+                    client.invokeService(RelationshipTypes.ThingworxEntityTypes.Things, name, "remoteDoor", payload, 10000);
                     return;
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -79,7 +86,7 @@ public class ClientDetailActivity extends ThingworxService {
                 try {
                     Intent i = new Intent(getApplicationContext(), HistoryListActivity.class);
                     i.putExtra("name",info.get("name").toString());
-                    startActivity(i);
+                    startActivityForResult(i,1);
                     return;
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -99,6 +106,19 @@ public class ClientDetailActivity extends ThingworxService {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        try {
+            if (!client.isConnected()){
+                AndroidThing thing = (AndroidThing) client.getThing("AndroidThing");
+                disconnect();
+                connect(new VirtualThing[]{thing});}
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.detailmenu, menu);
@@ -112,11 +132,11 @@ public class ClientDetailActivity extends ThingworxService {
             // action with ID action_settings was selected
             case R.id.action_main:
                 i = new Intent(this, MainActivity.class);
-                startActivity(i);
+                startActivityForResult(i,1);
                 break;
             case R.id.action_clientlist:
                 i = new Intent(this, ClientListActivity.class);
-                startActivity(i);
+                startActivityForResult(i,1);
                 break;
             case android.R.id.home:
                 navigateUpTo(new Intent(this, ClientListActivity.class));

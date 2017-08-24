@@ -78,6 +78,14 @@ public class MainActivity extends ThingworxService {
         checkBoxConnected = (CheckBox) findViewById(R.id.checkBoxConnected);
         PortView = (EditText) findViewById(R.id.port);
         AppKeyView = (EditText) findViewById(R.id.appKey);
+        rule = (EditText) findViewById(R.id.rule);
+        cond = (EditText) findViewById(R.id.condition);
+
+        IPView.setText("34.252.164.220");
+        PortView.setText("80");
+        AppKeyView.setText("ce22e9e4-2834-419c-9656-ef9f844c784c");
+        rule.setText("Haves");
+        cond.setText("PersonName==\"Kevin\"&&PersonSurname==\"Haves\"");
 
         Button connectButton = (Button) findViewById(R.id.connect_button);
         connectButton.setOnClickListener(new View.OnClickListener() {
@@ -112,7 +120,7 @@ public class MainActivity extends ThingworxService {
                         // Show Preferences Activity
                         connectionState = ConnectionState.DISCONNECTED;
                         Intent i = new Intent(getApplicationContext(),SettingsActivity.class);
-                        startActivity(i);
+                        startActivityForResult(i,1);
                         return;
                     }
 
@@ -164,7 +172,7 @@ public class MainActivity extends ThingworxService {
                     if(connectionState == ConnectionState.CONNECTED)
                         disconnect();
                     Intent i = new Intent(getApplicationContext(), SettingsActivity.class);
-                    startActivity(i);
+                    startActivityForResult(i,1);
                     return;
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -189,6 +197,15 @@ public class MainActivity extends ThingworxService {
 
         Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
+
+        if (!hasConnectionPreferences() && IPView.getText().toString().equals("")
+                && PortView.getText().toString().equals("") && AppKeyView.getText().toString().equals("")) {
+            // Show Preferences Activity
+            connectionState = ConnectionState.DISCONNECTED;
+            Intent i = new Intent(getApplicationContext(),SettingsActivity.class);
+            startActivityForResult(i,1);
+            return;
+        }
     }
 
     @Override
@@ -203,7 +220,11 @@ public class MainActivity extends ThingworxService {
                 e.printStackTrace();
             }
         } else {
-            checkBoxConnected.setChecked(thing==null?false:true);
+            if(client!=null) {
+                checkBoxConnected.setChecked(client.isConnected());
+            }
+            else
+                checkBoxConnected.setChecked(thing==null?false:true);
         }
     }
 
@@ -239,13 +260,13 @@ public class MainActivity extends ThingworxService {
             // action with ID action_settings was selected
             case R.id.action_clientlist:
                 i = new Intent(this, ClientListActivity.class);
-                startActivity(i);
+                startActivityForResult(i,1);
                 break;
             case R.id.action_settings:
                 if(connectionState == ConnectionState.CONNECTED)
                     disconnect();
                 i = new Intent(this, SettingsActivity.class);
-                startActivity(i);
+                startActivityForResult(i,1);
                 break;
             default:
                 break;

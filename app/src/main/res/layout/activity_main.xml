@@ -110,13 +110,12 @@
         android:layout_height="match_parent" >
 
         <EditText
+            android:id="@+id/rule"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:inputType="textPersonName"
-            android:text="Rule"
             android:ems="10"
-            android:id="@+id/rule"
-            android:hint="@string/prompt_rule" />
+            android:hint="@string/prompt_rule"
+            android:inputType="textPersonName" />
 
     </TableRow>
 
@@ -125,13 +124,12 @@
         android:layout_height="match_parent" >
 
         <EditText
+            android:id="@+id/condition"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:inputType="textPersonName"
-            android:text="Condition"
             android:ems="10"
-            android:id="@+id/condition"
-            android:hint="@string/prompt_condition" />
+            android:hint="@string/prompt_condition"
+            android:inputType="textPersonName" />
     </TableRow>
 
     <TableRow

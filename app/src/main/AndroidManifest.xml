@@ -27,7 +27,8 @@
         <activity android:name=".preferences.SettingsActivity"
             android:label="@string/title_activity_preference"
             android:parentActivityName=".MainActivity" />
-        <activity android:name=".HistoryListActivity" />
+        <activity android:name=".HistoryListActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"/>
 
         <service android:name=".utilities.ThingworxConnectService" />
         <service android:name=".utilities.ThingworxProcessService" />
